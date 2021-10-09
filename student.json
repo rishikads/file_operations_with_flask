@@ -1,8 +1,8 @@
 {"students":{
-	"1": "Ted",
-	"2": "Robin",
-	"3": "Barney",
-	"4": "Lily",
-	"5": "Marshall"
+	"1":{"name": "Ted"},
+	"2":{"name": "Robin"},
+	"3":{"name": "Barney"},
+	"4":{"name": "Lily"},
+	"5":{"name": "Marshall"}
 	}
 }
