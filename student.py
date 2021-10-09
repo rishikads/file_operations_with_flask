@@ -1,5 +1,4 @@
-from typing import ItemsView, ValuesView
-from flask import Flask , request , url_for
+from flask import Flask , request , url_for, status
 import json, os, requests
 app = Flask(__name__)
 @app.route('/' , methods=['POST', 'GET', 'PUT', 'DELETE'])
@@ -15,14 +14,21 @@ def a_operations():
         print(data)
         print(type(data))
         path = os.path.join(os.getcwd(),'student.json')
-        a= open(path, 'r+')
+        a= open(path, 'r')
         a= a.read()
         a= json.loads(a)
         b= a["students"]
-        b[data['id']]={}
-        b[data['id']]["name"]= data['name']
-        print(a)
-        return "update successful"
+        a_list = list(a)
+        overlap = data['id']
+        if(overlap in a_list):
+            def index():
+                return "same id exists", status.HTTP_400_BAD_REQUEST
+        else:
+            b[data['id']]["name"] = data['name']
+            new_path = os.path.join(path)
+            with open(new_path, 'w') as file:  
+                document = json.dump(a, file)
+            return "Updated Successfully"
     if(request.method=='PUT'):
         data= request.get_json()
         print(data)
@@ -31,13 +37,18 @@ def a_operations():
         a= open(path, 'r+')
         a= a.read()
         a= json.loads(a)
-        for i in a["students"] :
-            if (i==data['id']):
-                a["students"][i]= data['name']
-                a.append(data)
-                return "update successful"
-            else:
-                return "update unsuccessful"
+        b= a["students"]
+        a_list = list(a)
+        overlap = data['id']
+        if(overlap not in a_list):
+            def index():
+                return "Record not found", status.HTTP_400_BAD_REQUEST
+        else:
+            b[data['id']]["name"] = data['name']
+            new_path = os.path.join(path)
+            with open(new_path, 'w') as file:  
+                document = json.dump(a, file)
+            return "Updated Successfully"
     if(request.method=='DELETE'):
         data= request.get_json()
         print(data)
@@ -46,14 +57,18 @@ def a_operations():
         a= open(path, 'r+')
         a= a.read()
         a= json.loads(a)
-        for i in a["students"] :
-            if (i==data['id']):
-                a["students"][i]= data['name']
-                a=open("student.json", 'w')
-                a.write(None)
-                return "delete successful"
+        i=0
+        for a["students"][i] in a["students"]:
+            if (a["students"][i]==data['id']):
+                a["students"][i]["name"]= data['name']
+                del a["students"][i]
+                new_path = os.path.join(path)
+                with open(new_path, 'w') as file:  
+                    document = json.dump(a, file)
             else:
-                return "delete unsuccessful"
+                i=i+1
+        return a
+            
 if __name__ == '__main__' :
   app.run(debug=True, port=5000)
 
