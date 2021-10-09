@@ -19,7 +19,8 @@ def a_operations():
         a= a.read()
         a= json.loads(a)
         b= a["students"]
-        b[str(data['id'])]= data['name']
+        b[data['id']]={}
+        b[data['id']]["name"]= data['name']
         print(a)
         return "update successful"
     if(request.method=='PUT'):
@@ -55,5 +56,6 @@ def a_operations():
                 return "delete unsuccessful"
 if __name__ == '__main__' :
   app.run(debug=True, port=5000)
+
 
 
